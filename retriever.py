@@ -16,7 +16,6 @@ def _fetch_data(latitude, longitude, models):
 		"end_date": "2025-01-01",
 		"hourly": "shortwave_radiation",
 		"models": models,
-		"timezone": "Asia/Tokyo",
 	}
 
 	responses = openmeteo.weather_api(OPENMETEO_URL, params=params)
@@ -24,16 +23,19 @@ def _fetch_data(latitude, longitude, models):
 	for response in responses:
 		hourly = response.Hourly()
 		hourly_shortwave_radiation = hourly.Variables(0).ValuesAsNumpy()
+
+		# Build timestamp index in JST (and drop tz info for clean CSVs)
+		dt_index = pd.date_range(
+			start=pd.to_datetime(hourly.Time(), unit="s"),
+			end=pd.to_datetime(hourly.TimeEnd(), unit="s"),
+			freq=pd.Timedelta(seconds=hourly.Interval()),
+			inclusive="left",
+		).tz_localize("UTC").tz_convert("Asia/Tokyo").tz_localize(None)
+
+		data = {"date": dt_index}
+		data["shortwave_solar_radiation"] = hourly_shortwave_radiation
+		hourly_dataframe = pd.DataFrame(data=data)
 		
-		hourly_data = {"date": pd.date_range(
-			start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
-			end =  pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
-			freq = pd.Timedelta(seconds = hourly.Interval()),
-			inclusive = "left"
-		)}
-		
-		hourly_data["shortwave_solar_radiation"] = hourly_shortwave_radiation
-		hourly_dataframe = pd.DataFrame(data=hourly_data)
 		return hourly_dataframe
 
 
