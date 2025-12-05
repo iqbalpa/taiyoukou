@@ -31,9 +31,4 @@ HATSUDEN_INFO = [
 
 OPENMETEO_URL = "https://historical-forecast-api.open-meteo.com/v1/forecast"
 
-JMA_MODELS = ["jma_msm"]
-ECMWF_MODELS = ["ecmwf_ifs", "ecmwf_ifs025", "ecmwf_aifs025_single"]
-MODELS = {
-    "JMA": JMA_MODELS,
-    "ECMWF": ECMWF_MODELS
-}
+MODELS = ["ecmwf_ifs", "ecmwf_ifs025", "ecmwf_aifs025_single", "jma_msm"]

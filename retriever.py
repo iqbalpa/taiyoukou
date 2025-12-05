@@ -41,7 +41,7 @@ def _fetch_data(latitude, longitude, models):
 
 def get_data():
 	results = {}
-	for model_name, models in MODELS.items():
+	for model in MODELS:
 		temp = []
 		for plant in HATSUDEN_INFO:
 			latitude = plant["latitude"]
@@ -49,7 +49,7 @@ def get_data():
 			romaji_name = plant["romaji_name"]
 			plant_name = plant["plant_name"]
 			
-			hourly_dataframe = _fetch_data(latitude, longitude, models)
+			hourly_dataframe = _fetch_data(latitude, longitude, model)
 			temp.append({
 				"romaji_name": romaji_name,
 				"plant_name": plant_name,
@@ -65,7 +65,7 @@ def get_data():
 			(combined_dataframe["date"] >= "2024-01-01") & (combined_dataframe["date"] < "2025-01-01")
 		].reset_index(drop=True)
 
-		results[model_name] = combined_dataframe
+		results[model] = combined_dataframe
 
 	return results
 
