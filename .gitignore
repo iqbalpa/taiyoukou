@@ -6,3 +6,5 @@ __pycache__/
 .DS_Store
 .vscode/
 *cache*
+amedas_solar_radiation.csv
+*.html
